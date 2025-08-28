@@ -1,0 +1,61 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Introspection éclair : Déboguer ROS 2 Control avec \texttt{pal\_statistics}}
+\author{Maximilien Naveau (PAL Robotics)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Durée}
+Présentation éclair (\~5 minutes)
+
+\section*{Résumé ($\leq$100 mots)}
+Cette présentation éclair introduit l'intégration de \texttt{pal\_statistics} dans ROS 2 Control, permettant une introspection automatique des entrées et sorties des contrôleurs sans ajout de code utilisateur. Cette fonctionnalité simplifie le débogage en rendant immédiatement disponibles les signaux internes pour leur visualisation dans des outils comme PlotJuggler. Nous montrons également comment \texttt{pal\_statistics} peut être utilisé indépendamment de ROS 2 Control, offrant une approche uniforme de l'introspection dans tout nœud ROS 2. Une courte démonstration illustre un contrôleur chaînable calculant la somme de deux suites de Fibonacci tout en exposant ses états intermédiaires pour une analyse en temps réel.
+
+\section*{Description détaillée (concise pour présentation éclair)}
+Le débogage des contrôleurs robotiques nécessite souvent un accès à des valeurs intermédiaires qui ne sont pas exposées via les interfaces standards de commande et d'état. Sans introspection, les développeurs perdent un temps précieux à ajouter des sorties spécifiques de diagnostic.  
+
+Pour répondre à ce besoin, \texttt{pal\_statistics} fournit un moyen léger et efficace de publier des métriques dans ROS 2. Récemment, ROS 2 Control a intégré \texttt{pal\_statistics} directement dans son interface de contrôleurs. Cela signifie que tout contrôleur peut automatiquement exposer ses calculs internes (entrées, sorties, variables intermédiaires) sans ajout de code par l'utilisateur.  
+
+Pour les développeurs, cela se traduit par :
+\begin{itemize}
+  \item Introspection sans effort : les contrôleurs publient leurs données de diagnostic automatiquement.
+  \item Visualisation fluide : des outils comme PlotJuggler (depuis la version 3.10.11) interprètent directement ces métriques.
+  \item Workflow cohérent : \texttt{pal\_statistics} peut être utilisé indépendamment dans tout nœud ROS 2, garantissant une expérience uniforme de débogage.
+\end{itemize}
+
+Dans cette présentation éclair, nous montrons un exemple dans \texttt{ros2\_control\_demos} : un contrôleur chaînable qui calcule la somme de deux suites de Fibonacci. Pendant l'exécution, le contrôleur utilise \texttt{pal\_statistics} pour exposer les résultats intermédiaires, visualisables en temps réel.  
+
+\section*{Objectifs pour l'audience}
+\begin{itemize}
+  \item Découvrir comment l'introspection est désormais intégrée à ROS 2 Control.
+  \item Apprendre à utiliser \texttt{pal\_statistics} à la fois à l'intérieur et en dehors des contrôleurs.
+  \item Comprendre comment le débogage devient plus rapide et plus transparent grâce à PlotJuggler.
+\end{itemize}
+
+\section*{Ressources}
+\begin{itemize}
+  \item pal\_statistics : \texttt{https://github.com/pal-robotics/pal\_statistics}
+  \item ROS 2 Control : \texttt{https://github.com/ros-controls/ros2\_control}
+  \item PlotJuggler Changelog 3.10.11 : \texttt{https://github.com/facontidavide/PlotJuggler/blob/main/CHANGELOG.rst}
+  \item Démo : \texttt{https://github.com/ros-controls/ros2\_control\_demos}
+  \item Intégration ROS 2 Control (introspection.hpp) : \texttt{https://github.com/ros-controls/ros2\_control/blob/master/hardware\_interface/include/hardware\_interface/introspection.hpp}
+  \item Intégration ROS 2 Control (controller\_interface\_base.cpp) : \texttt{https://github.com/ros-controls/ros2\_control/blob/master/controller\_interface/src/controller\_interface\_base.cpp\#L180C3-L180C38}
+\end{itemize}
+
+\section*{Illustration}
+\begin{center}
+\includegraphics[width=0.8\linewidth]{plotjuggler_placeholder.png}
+\end{center}
+\textit{(Espace réservé pour une capture d'écran de PlotJuggler)}
+\end{document}
