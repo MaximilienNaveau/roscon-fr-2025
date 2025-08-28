@@ -1,4 +1,4 @@
-LATEX=pdflatex
+LATEX=pdflatex -interaction=nonstopmode  
 SRC_EN=abstract_en.tex
 SRC_FR=abstract_fr.tex
 PDF_EN=abstract_en.pdf

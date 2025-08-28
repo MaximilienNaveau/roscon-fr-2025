@@ -8,7 +8,7 @@
 \usepackage{geometry}
 \geometry{margin=2.5cm}
 
-\title{Lightning Introspection: Debugging ROS 2 Control with \texttt{pal\_statistics}}
+\title{Introspection and Debugging with \texttt{pal\_statistics} in ROS 2 Control}
 \author{Maximilien Naveau (PAL Robotics)}
 \date{}
 
@@ -17,40 +17,76 @@
 \maketitle
 
 \section*{Duration}
-Lightning Talk (~5 minutes)
+Standard talk ($\approx$20 minutes), 10 to 15 minutes of presentation + 5 to 10 minutes of Q\&A.
 
 \section*{Abstract ($\leq$100 words)}
-This lightning talk introduces the integration of \texttt{pal\_statistics} into ROS 2 Control, enabling automatic introspection of controller inputs and outputs without additional user code. This feature simplifies debugging by making internal signals immediately available for visualization in tools such as PlotJuggler. We also highlight how \texttt{pal\_statistics} can be used independently of ROS 2 Control, offering a consistent approach to introspection across ROS 2 nodes. A short demo illustrates a chainable controller computing the sum of two Fibonacci sequences while exposing intermediate states for real-time analysis.
+This talk presents the integration of \texttt{pal\_statistics} within ROS 2 Control
+to provide real-time introspection of controller inputs and outputs. This feature
+enables developers to monitor internal signals without user intervention,
+significantly improving debugging and tuning workflows. Beyond ROS 2 Control,
+\texttt{pal\_statistics} can be used independently to expose metrics that tools
+such as PlotJuggler can parse seamlessly. We showcase a demo—implemented in
+\texttt{ros2\_control\_demos}—where we run the \texttt{ros2\_control\_example\_1} and show case that every
+controller exposes its inputs/outputs. An additionnal node is ran to present the
+independent functionality of \texttt{pal\_statistics} and it's use with PlotJuggler.
 
-\section*{Detailed Description (concise for lightning)}
-Debugging robotic controllers often requires access to intermediate values that are not exposed via standard command and state interfaces. Without introspection, developers spend valuable time adding custom debug outputs.  
+\section*{Detailed Description ($\leq$1000 words)}
+Debugging and introspection are critical for developing reliable real time robotic
+systems.
+The real time aspect is important as it means that the tools and methods used
+should not interfere with the real time loop of the robot.
+Moreover, controllers in ROS 2 Control typically expose only their command and state
+interfaces, but internal intermediate computations are often hidden from
+developers. This can make it difficult to identify bottlenecks, numerical issues,
+or misconfigurations during development.
 
-To solve this, \texttt{pal\_statistics} provides a lightweight and efficient way to publish metrics in ROS 2. Recently, ROS 2 Control has integrated \texttt{pal\_statistics} directly into its controller interface. This means any controller can automatically expose its internal computations (inputs, outputs, intermediate variables) without additional code from the user.  
+To address this, PAL Robotics developed \texttt{pal\_statistics}, a lightweight
+library designed to publish arbitrary metrics and statistics efficiently. The ROS
+2 Control framework has integrated \texttt{pal\_statistics} directly into its
+controller interface layer, allowing every controller to expose its inputs,
+outputs, and internal states immediately, without requiring additional user code.
 
-For developers, this translates into:
+This integration provides several advantages:
 \begin{itemize}
-  \item Zero-effort introspection: controllers publish debug data out of the box.
-  \item Seamless visualization: tools like PlotJuggler (since v3.10.11) automatically parse these metrics.
-  \item Consistent workflow: \texttt{pal\_statistics} can be reused independently in any ROS 2 node, ensuring a uniform debugging experience.
+    \item \textbf{Automatic Introspection:} Every controller can publish its
+          internal metrics, making debugging faster and more transparent.
+    \item \textbf{Seamless Debugging Tools:} Tools like PlotJuggler can
+          automatically parse and visualize these metrics thanks to recent
+          updates (≥3.10.11).
+    \item \textbf{Independent Usage:} \texttt{pal\_statistics} can also be used
+          outside ROS 2 Control in any ROS 2 node, enabling a consistent
+          introspection workflow across different robotic subsystems.
 \end{itemize}
 
-In this lightning talk, we briefly show a demo in \texttt{ros2\_control\_demos}: a chainable controller computing the sum of two Fibonacci sequences. While performing its task, the controller uses \texttt{pal\_statistics} to expose intermediate results, which can be visualized in real time.  
+\subsection*{Example Use Case}
 
-\section*{Audience Takeaways}
+For the live demo, we will use \texttt{ros2\_control\_example\_1} to run the joint
+trajectory controller on the rrbot. With PlotJuggler, we will demonstrate how
+input/outputs state signals are visualized for each controller in real time.
+To further illustrate
+the flexibility of \texttt{pal\_statistics}, we will add a simple Python node that
+uses \texttt{pal\_statistics} independently of ROS 2 Control, interacting with the
+example\_1 setup. This will show how metrics can be exposed and visualized outside
+the controller framework, providing a consistent introspection workflow.
+
+\subsection*{Audience Takeaways}
 \begin{itemize}
-  \item Learn how introspection is now built into ROS 2 Control.
-  \item See how to leverage \texttt{pal\_statistics} both inside and outside controllers.
-  \item Understand how debugging becomes faster and more transparent with tools like PlotJuggler.
+    \item Learn how \texttt{pal\_statistics} integrates into ROS 2 Control for
+          automatic introspection.
+    \item Discover how to use \texttt{pal\_statistics} independently in custom
+          ROS 2 nodes.
+    \item Understand how to visualize and debug controller internals using
+          PlotJuggler.
 \end{itemize}
 
 \section*{Resources}
 \begin{itemize}
-  \item pal\_statistics: \texttt{https://github.com/pal-robotics/pal\_statistics}
-  \item ROS 2 Control: \texttt{https://github.com/ros-controls/ros2\_control}
-  \item PlotJuggler Changelog 3.10.11: \texttt{https://github.com/facontidavide/PlotJuggler/blob/main/CHANGELOG.rst}
-  \item Demo: \texttt{https://github.com/ros-controls/ros2\_control\_demos}
-  \item ROS 2 Control integration (introspection.hpp): \texttt{https://github.com/ros-controls/ros2\_control/blob/master/hardware\_interface/include/hardware\_interface/introspection.hpp}
-  \item ROS 2 Control integration (controller\_interface\_base.cpp): \texttt{https://github.com/ros-controls/ros2\_control/blob/master/controller\_interface/src/controller\_interface\_base.cpp\#L180C3-L180C38}
+    \item \texttt{pal\_statistics}: \texttt{https://github.com/pal-robotics/pal\_statistics}
+    \item ROS 2 Control: \texttt{https://github.com/ros-controls/ros2\_control}
+    \item PlotJuggler Changelog 3.10.11: \texttt{https://github.com/facontidavide/PlotJuggler/blob/main/CHANGELOG.rst}
+    \item Demo repository: \texttt{https://github.com/ros-controls/ros2\_control_demos}
+    \item ROS 2 Control integration (introspection.hpp): \texttt{https://github.com/ros-controls/ros2\_control/blob/master/hardware\_interface/include/hardware\_interface/introspection.hpp}
+    \item ROS 2 Control integration (controller\_interface\_base.cpp): \texttt{https://github.com/ros-controls/ros2\_control/blob/master/controller_interface/src/controller_interface_base.cpp\#L180C3-L180C38}
 \end{itemize}
 
 \section*{Illustration}
@@ -58,4 +94,5 @@ In this lightning talk, we briefly show a demo in \texttt{ros2\_control\_demos}:
 \includegraphics[width=0.8\linewidth]{plotjuggler_placeholder.png}
 \end{center}
 \textit{(Placeholder for a PlotJuggler screenshot)}
+
 \end{document}
