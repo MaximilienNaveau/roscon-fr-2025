@@ -8,8 +8,9 @@
 \usepackage{geometry}
 \geometry{margin=2.5cm}
 
-\title{Introspection éclair : Déboguer ROS 2 Control avec \texttt{pal\_statistics}}
-\author{Maximilien Naveau (PAL Robotics)}
+\title{Introspection et Débogage avec \texttt{pal\_statistics} dans \texttt{ROS
+2 Control}} \author{Maximilien Naveau \& Pierre
+Fernbach\thanks{firstname.lastname@pal-robotics.com, PAL FRANCE}}
 \date{}
 
 \begin{document}
@@ -17,45 +18,115 @@
 \maketitle
 
 \section*{Durée}
-Présentation éclair (\~5 minutes)
+
+Présentation standard ($\approx$20 minutes), 10 à 15 minutes de présentation + 5
+à 10 minutes de questions/réponses.
 
 \section*{Résumé ($\leq$100 mots)}
-Cette présentation éclair introduit l'intégration de \texttt{pal\_statistics} dans ROS 2 Control, permettant une introspection automatique des entrées et sorties des contrôleurs sans ajout de code utilisateur. Cette fonctionnalité simplifie le débogage en rendant immédiatement disponibles les signaux internes pour leur visualisation dans des outils comme PlotJuggler. Nous montrons également comment \texttt{pal\_statistics} peut être utilisé indépendamment de ROS 2 Control, offrant une approche uniforme de l'introspection dans tout nœud ROS 2. Une courte démonstration illustre un contrôleur chaînable calculant la somme de deux suites de Fibonacci tout en exposant ses états intermédiaires pour une analyse en temps réel.
 
-\section*{Description détaillée (concise pour présentation éclair)}
-Le débogage des contrôleurs robotiques nécessite souvent un accès à des valeurs intermédiaires qui ne sont pas exposées via les interfaces standards de commande et d'état. Sans introspection, les développeurs perdent un temps précieux à ajouter des sorties spécifiques de diagnostic.  
+Cette présentation expose l'intégration de \texttt{pal\_statistics} au sein de
+\texttt{ROS 2 Control} pour offrir une introspection \textbf{en temps réel} des
+entrées et sorties des contrôleurs. Cette fonctionnalité permet aux développeurs
+de surveiller les signaux internes \textbf{sans intervention utilisateur},
+améliorant considérablement les workflows de débogage et de réglage. Au-delà de
+\texttt{ROS 2 Control}, \texttt{pal\_statistics} peut être utilisé
+indépendamment pour exposer des métriques que des outils comme
+\texttt{PlotJuggler} peuvent analyser facilement. Nous présentons une
+démonstration—implémentée dans \texttt{ros2\_control\_demos}—où nous exécutons
+\texttt{ros2\_control\_example\_1} et montrons que chaque contrôleur expose ses
+entrées/sorties. Un nœud additionnel est lancé pour illustrer la fonctionnalité
+indépendante de \texttt{pal\_statistics} et son utilisation avec
+\texttt{PlotJuggler}.
 
-Pour répondre à ce besoin, \texttt{pal\_statistics} fournit un moyen léger et efficace de publier des métriques dans ROS 2. Récemment, ROS 2 Control a intégré \texttt{pal\_statistics} directement dans son interface de contrôleurs. Cela signifie que tout contrôleur peut automatiquement exposer ses calculs internes (entrées, sorties, variables intermédiaires) sans ajout de code par l'utilisateur.  
+\section*{Description détaillée ($\leq$1000 mots)}
 
-Pour les développeurs, cela se traduit par :
+Le débogage et l'introspection sont indispensables pour concevoir des systèmes
+robotiques fiables fonctionnant en temps réel. Dans ce contexte, il est
+essentiel que les outils et méthodes utilisés n'interfèrent pas avec la boucle
+de contrôle du robot, dont la fréquence d'exécution peut atteindre plusieurs
+kHz, typiquement jusqu'à 2kHz. Cette cadence élevée génère une quantité
+considérable de données de log, rendant crucial l'usage d'outils capables de
+filtrer et d'analyser efficacement ces informations tout en préservant la
+qualité du contrôle. Notons que l'utilisation des topics ROS 2 classiques n'est
+pas adaptée à ces fréquences élevées.
+
+De plus, les contrôleurs dans \texttt{ROS 2 Control} exposent généralement
+uniquement leurs interfaces de commande et d'état, tandis que les calculs
+intermédiaires internes restent souvent inaccessibles aux développeurs. Cette
+limitation complique l'identification des goulets d'étranglement, des problèmes
+numériques ou des erreurs de configuration lors du développement.
+
+Pour répondre à ces enjeux, PAL Robotics a développé \texttt{pal\_statistics},
+une bibliothèque légère conçue pour publier efficacement des métriques et
+statistiques arbitraires, même à des fréquences élevées comme 2kHz. Le framework
+\texttt{ROS 2 Control} intègre désormais \texttt{pal\_statistics} directement
+dans sa couche d'interface contrôleur, permettant à chaque contrôleur d'exposer
+instantanément ses entrées, sorties et états internes, sans ajout de code
+utilisateur.
+
+Cette intégration apporte plusieurs bénéfices :
 \begin{itemize}
-  \item Introspection sans effort : les contrôleurs publient leurs données de diagnostic automatiquement.
-  \item Visualisation fluide : des outils comme PlotJuggler (depuis la version 3.10.11) interprètent directement ces métriques.
-  \item Workflow cohérent : \texttt{pal\_statistics} peut être utilisé indépendamment dans tout nœud ROS 2, garantissant une expérience uniforme de débogage.
+  \item \textbf{Introspection automatique :} Chaque contrôleur publie en continu
+        ses entrées et sorties par défaut, même à haute fréquence.
+  \item \textbf{Transparence des métriques internes :} Les développeurs accèdent
+        facilement aux métriques internes, ce qui accélère et clarifie le
+        débogage.
+  \item \textbf{Outils de visualisation adaptés :} Des outils comme
+        \texttt{PlotJuggler} peuvent analyser et afficher ces métriques en temps
+        réel grâce aux dernières évolutions ($\leq$3.10.11).
+  \item \textbf{Utilisation flexible :} \texttt{pal\_statistics} peut également
+        être utilisé indépendamment de \texttt{ROS 2 Control} dans n'importe
+        quel nœud ROS 2, assurant une introspection cohérente sur l'ensemble des
+        sous-systèmes robotiques.
 \end{itemize}
 
-Dans cette présentation éclair, nous montrons un exemple dans \texttt{ros2\_control\_demos} : un contrôleur chaînable qui calcule la somme de deux suites de Fibonacci. Pendant l'exécution, le contrôleur utilise \texttt{pal\_statistics} pour exposer les résultats intermédiaires, visualisables en temps réel.  
+\subsection*{Cas d'utilisation exemple}
 
-\section*{Objectifs pour l'audience}
-\begin{itemize}
-  \item Découvrir comment l'introspection est désormais intégrée à ROS 2 Control.
-  \item Apprendre à utiliser \texttt{pal\_statistics} à la fois à l'intérieur et en dehors des contrôleurs.
-  \item Comprendre comment le débogage devient plus rapide et plus transparent grâce à PlotJuggler.
-\end{itemize}
+Pour la démonstration en direct, nous utiliserons
+\texttt{ros2\_control\_example\_1} pour exécuter le contrôleur de trajectoire
+articulaire sur le rrbot. Avec \texttt{PlotJuggler}, nous montrerons comment les
+signaux d'état d'entrée/sortie sont visualisés pour chaque contrôleur en temps
+réel. Pour illustrer davantage la flexibilité de \texttt{pal\_statistics}, nous
+ajouterons un simple nœud Python qui utilise \texttt{pal\_statistics}
+indépendamment de \texttt{ROS 2 Control}, interagissant avec la configuration
+example\_1. Cela montrera comment les métriques peuvent être exposées et
+visualisées en dehors du framework contrôleur, offrant un workflow
+d'introspection cohérent.
 
-\section*{Ressources}
-\begin{itemize}
-  \item pal\_statistics : \texttt{https://github.com/pal-robotics/pal\_statistics}
-  \item ROS 2 Control : \texttt{https://github.com/ros-controls/ros2\_control}
-  \item PlotJuggler Changelog 3.10.11 : \texttt{https://github.com/facontidavide/PlotJuggler/blob/main/CHANGELOG.rst}
-  \item Démo : \texttt{https://github.com/ros-controls/ros2\_control\_demos}
-  \item Intégration ROS 2 Control (introspection.hpp) : \texttt{https://github.com/ros-controls/ros2\_control/blob/master/hardware\_interface/include/hardware\_interface/introspection.hpp}
-  \item Intégration ROS 2 Control (controller\_interface\_base.cpp) : \texttt{https://github.com/ros-controls/ros2\_control/blob/master/controller\_interface/src/controller\_interface\_base.cpp\#L180C3-L180C38}
-\end{itemize}
-
+Petit example de ce qu'on peut voir une fois les controllers lancés:
 \section*{Illustration}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{plotjuggler_placeholder.png}
 \end{center}
-\textit{(Espace réservé pour une capture d'écran de PlotJuggler)}
+\textit{(Espace réservé pour une capture d'écran \texttt{PlotJuggler})}
+
+\subsection*{Points clés pour l'audience}
+
+\begin{itemize}
+    \item Comprendre comment \texttt{pal\_statistics} s'intègre dans
+          \texttt{ROS 2 Control} pour l'introspection automatique.
+    \item Découvrir comment utiliser \texttt{pal\_statistics} indépendamment
+    dans des nœuds ROS 2 personnalisés.
+    \item Apprendre à visualiser et déboguer les internes des contrôleurs avec
+          \texttt{PlotJuggler}.
+\end{itemize}
+
+\section*{Ressources}
+\begin{itemize}
+    \item \texttt{pal\_statistics} :
+    \href{https://github.com/pal-robotics/pal_statistics}{github.com/pal-robotics/pal\_statistics}
+    \item \texttt{ROS 2 Control} :
+    \href{https://github.com/ros-controls/ros2_control}{github.com/ros-controls/ros2\_control}
+    \item \texttt{PlotJuggler} Changelog 3.10.11 :
+    \href{https://github.com/facontidavide/PlotJuggler/blob/main/CHANGELOG.rst}{github.com/facontidavide/PlotJuggler/CHANGELOG.rst}
+    \item Dépôt de démonstration :
+    \href{https://github.com/ros-controls/ros2_control_demos}{github.com/ros-controls/ros2\_control\_demos}
+    \item Intégration \texttt{ROS 2 Control} :
+    \href{https://github.com/ros-controls/ros2_control/blob/master/hardware_interface/include/hardware_interface/introspection.hpp}{hardware\_interface/include/introspection.hpp}
+    \item Intégration \texttt{ROS 2 Control} :
+    \href{https://github.com/ros-controls/ros2_control/blob/master/controller_interface/src/controller_interface_base.cpp#L180C3-L180C38}{controller\_interface\_base.cpp}
+    \item Depot de la demonstration prevue :
+    \href{https://github.com/MaximilienNaveau/roscon-fr-2025}{github.com/MaximilienNaveau/roscon-fr-2025}
+\end{itemize}
+
 \end{document}

@@ -1,10 +1,10 @@
-LATEX=pdflatex -interaction=nonstopmode  
+LATEX=pdflatex --interaction=nonstopmode
 SRC_EN=abstract_en.tex
 SRC_FR=abstract_fr.tex
 PDF_EN=abstract_en.pdf
 PDF_FR=abstract_fr.pdf
 
-all: $(PDF_EN) $(PDF_FR)
+all: $(PDF_FR) # $(PDF_EN)
 
 $(PDF_EN): $(SRC_EN)
 	$(LATEX) $(SRC_EN)
@@ -20,4 +20,4 @@ distclean: clean
 
 # Auto-recompile when sources change (requires `entr`)
 watch:
-	ls *.tex | entr make
+	ls *.tex | entr bash -c 'reset && make'
