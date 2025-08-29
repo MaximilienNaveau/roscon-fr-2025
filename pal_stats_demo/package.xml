@@ -5,7 +5,7 @@
   <version>0.0.0</version>
   <description>Demo package for pal_statistics introspection</description>
   <maintainer email="maximilien.naveau@pal-robotics.com">user</maintainer>
-  <license>Apache License 2.0</license>
+  <license>BSD 2-clause</license>
 
   <depend>rclpy</depend>
   <depend>pal_statistics</depend>
