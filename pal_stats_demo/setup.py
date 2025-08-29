@@ -27,7 +27,7 @@ setup(
     maintainer='Maximilien Naveau',
     maintainer_email='maximilien.naveau@pal-robotics.com',
     description='Demo package for pal_statistics introspection',
-    license='Apache License 2.0',
+    license='BSD 2-clause',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
