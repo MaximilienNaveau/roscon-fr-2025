@@ -5,6 +5,7 @@
 \usepackage[french]{babel}
 \usepackage{graphicx}
 \usepackage{overpic}
+\usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{geometry}
 \geometry{margin=2.5cm}
@@ -49,7 +50,7 @@ kHz, typiquement jusqu'à 2kHz. Cette cadence élevée génère une quantité
 considérable de données de log, rendant crucial l'usage d'outils capables de
 filtrer et d'analyser efficacement ces informations tout en préservant la
 qualité du contrôle. Notons que l'utilisation des topics ROS 2 classiques n'est
-pas adaptée à ces fréquences élevées.
+pas adaptée à ces fréquences élevées due au fait qu'ils ne sont pas temps réel.
 
 De plus, les contrôleurs dans \texttt{ROS 2 Control} exposent généralement
 uniquement leurs interfaces de commande et d'état, tandis que les calculs
@@ -74,7 +75,7 @@ Cette intégration apporte plusieurs bénéfices :
         débogage.
   \item \textbf{Outils de visualisation adaptés :} Des outils comme
         \texttt{PlotJuggler} peuvent analyser et afficher ces métriques en temps
-        réel grâce aux dernières évolutions ($\leq$3.10.11).
+        réel grâce aux dernières évolutions ($\geq$3.10.11).
   \item \textbf{Utilisation flexible :} \texttt{pal\_statistics} peut également
         être utilisé indépendamment de \texttt{ROS 2 Control} dans n'importe
         quel n\oe{}ud ROS 2, assurant une introspection cohérente sur l'ensemble des
@@ -94,26 +95,29 @@ example\_1. Cela montrera comment les métriques peuvent être exposées et
 visualisées en dehors du framework contrôleur, offrant un workflow
 d'introspection cohérent.
 
-Petit example de ce qu'on peut voir une fois les controllers lancés:
+Petit exemple Figure~\ref{fig:plotjuggler} de ce que l'on peut voir une fois
+les contrôleurs lancés.
 
-Petit exemple de ce que l'on peut voir une fois les contrôleurs lancés :
 \begin{figure}[h!]
   \centering
   % Partie gauche : écran vide avec la sélection superposée
-  \begin{minipage}[t]{0.49\textwidth}
-    \centering
-    \begin{overpic}[width=0.95\linewidth]{plot-juggler-empty.png}
-      \put(30,5){\includegraphics[width=0.6\linewidth]{plot_juggler_selection_with_node.png}}
-    \end{overpic}
-    \caption*{À gauche : sélection dans PlotJuggler des deux topics d'introspection.}
-  \end{minipage}
+   \begin{subfigure}[t]{0.49\textwidth}
+     \centering
+     \begin{overpic}[width=0.95\linewidth]{plot-juggler-empty.png}
+       \put(30,5){\includegraphics[width=0.6\linewidth]{plot_juggler_selection_with_node.png}}
+     \end{overpic}
+     \caption{Sélection dans PlotJuggler des deux topics d'introspection.}
+   \end{subfigure}%
+  \hfill
   % Partie droite : données
-  \begin{minipage}[t]{0.49\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=0.95\linewidth]{plot_juggler_2_introspection.png}
-    \caption*{À droite : Tracé des signaux d'entrée/sortie des contrôleurs en haut, et tracé du nœud Python en bas.}
-  \end{minipage}
-  \caption{Exemple d'utilisation de PlotJuggler pour l'introspection en temps réel des contrôleurs ROS 2}
+    \caption{Tracé des signaux d'entrée/sortie des contrôleurs en haut, et tracé du nœud Python en bas.}
+    \label{fig:1b}
+  \end{subfigure}
+   \caption{Exemple d'utilisation de PlotJuggler pour l'introspection en temps réel des contrôleurs ROS 2.}
+   \label{fig:plotjuggler}
 \end{figure}
 
 \subsection*{Points clés pour l'audience}
