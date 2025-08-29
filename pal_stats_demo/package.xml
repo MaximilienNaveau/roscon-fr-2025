@@ -7,8 +7,11 @@
   <maintainer email="maximilien.naveau@pal-robotics.com">user</maintainer>
   <license>BSD 2-clause</license>
 
-  <depend>rclpy</depend>
   <depend>pal_statistics</depend>
+  <depend>rclpy</depend>
+  <depend>ros2_control_demo_example_1</depend>
+  <depend>std_msgs</depend>
+  <depend>plotjuggler</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

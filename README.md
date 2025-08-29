@@ -1,5 +1,5 @@
 # roscon-fr-2025
-Abstract for the roscon-fr-2025
+Abstract and demo for the roscon-fr-2025
 
 ## Build the abstract
 
