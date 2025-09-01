@@ -16,6 +16,7 @@
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
       imports = [ inputs.gepetto.flakeModule ];
+      overlays = [ (import ./roscon-fr-overlay.nix) ];
       perSystem =
         {
           lib,
@@ -86,11 +87,11 @@
                 platforms = lib.platforms.linux;
               };
             };
-            ros-jazzy-ros2-control-demo-example-1 = pkgs.rosPackages.jazzy.ros2-control-demo-example-1.overrideAttrs {
+            ros-jazzy-ros2-control-demo-example-1 = pkgs.rosPackages.jazzy.ros2-control-demo-example-1.overrideAttrs (old: {
               nativeBuildInputs = [
                 pkgs.rosPackages.jazzy.ament-cmake
                 pkgs.rosPackages.jazzy.ros2-control-cmake
-              ] ++ (pkgs.ros-jazzy-ros2-control-demo-example-1.nativeBuildInputs or []);
+              ] ++ (old.nativeBuildInputs or []);
               propagatedBuildInputs = [
                 pkgs.rosPackages.jazzy.launch-testing-ros
                 pkgs.rosPackages.jazzy.controller-manager
@@ -103,52 +104,10 @@
                 pkgs.rosPackages.jazzy.forward-command-controller
                 pkgs.rosPackages.jazzy.robot-state-publisher
                 pkgs.rosPackages.jazzy.ros2-controllers-test-nodes
-              ] ++ (pkgs.ros-jazzy-ros2-control-demo-example-1.propagatedBuildInputs or []);
-              doCheck = false;
-            };
-            ros-jazzy-plotjuggler = pkgs.rosPackages.jazzy.plotjuggler.overrideAttrs (old: {
-              name = "ros-jazzy-plotjuggler-3.10.11";
-              src = pkgs.fetchFromGitHub {
-                owner = "facontidavide";
-                repo = "PlotJuggler";
-                rev = "3.10.11";
-                sha256 = "sha256-BFY4MpJHsGi3IjK9hX23YD45GxTJWcSHm/qXeQBy9u8=";
-              };
-              postPatch = ''
-                (
-                  echo "function(find_or_download_data_tamer)"
-                  echo "  find_package(data_tamer_cpp REQUIRED)"
-                  echo "  add_library(data_tamer::parser ALIAS data_tamer_cpp::data_tamer)"
-                  echo "  add_library(data_tamer_parser ALIAS data_tamer_cpp::data_tamer)"
-                  echo "endfunction()"
-                ) > cmake/find_or_download_data_tamer.cmake
-              '';
-              BuildInputs = [
-                pkgs.libbfd
-                pkgs.lua
-                pkgs.nlohmann_json
-                pkgs.lz4
-                pkgs.rosPackages.jazzy.data-tamer-cpp
-                pkgs.rosPackages.jazzy.mcap-vendor
-              ] ++ (old.BuildInputs or []);
-              propagatedBuildInputs = [
-                pkgs.libbfd
-                pkgs.lua
-                pkgs.nlohmann_json
-                pkgs.lz4
-                pkgs.rosPackages.jazzy.data-tamer-cpp
-                pkgs.rosPackages.jazzy.mcap-vendor
+                self'.packages.ros-jazzy-plotjuggler
               ] ++ (old.propagatedBuildInputs or []);
+              doCheck = false;
             });
-            ros-jazzy-plotjuggler-ros = pkgs.rosPackages.jazzy.plotjuggler-ros.overrideAttrs {
-              src = pkgs.fetchFromGitHub {
-                owner = "PlotJuggler";
-                repo = "plotjuggler-ros-plugins";
-                rev = "2.3.1";
-                sha256 = "sha256-5AR6UbRAE42NZwFR5G+ECdeuvNC3u4UXvIPr8OPZkjQ=";
-              };
-            };
-            inherit (pkgs) fizz;
           };
         };
     };
