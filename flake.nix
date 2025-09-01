@@ -2,9 +2,9 @@
   description = "Abstract and demo for the roscon-fr-2025";
 
   inputs = {
-    gepetto.url = "github:gepetto/nix";
+    gepetto.url = "github:nim65s/gepetto-nix/max";
     flake-parts.follows = "gepetto/flake-parts";
-    gazebo-sim-overlay.follows = "gepetto/gazebo-sim-overlay";
+    # gazebo-sim-overlay.follows = "gepetto/gazebo-sim-overlay";
     nixpkgs.follows = "gepetto/nixpkgs";
     nix-ros-overlay.follows = "gepetto/nix-ros-overlay";
     systems.follows = "gepetto/systems";
@@ -24,12 +24,22 @@
           ...
         }:
         {
+          devShells = {
+            default = pkgs.mkShell {
+              name = "roscon-fr-dev-shell";
+              packages = [
+                self'.packages.roscon-fr-demo
+                pkgs.libGL
+                pkgs.libGLU
+              ];
+            };
+          };
           packages = {
             default = self'.packages.roscon-fr-demo;
             roscon-fr-demo = with pkgs.rosPackages.humble; buildEnv {
                name = "roscon-fr-demo";
                paths = [
-                 self'.packages.pal-stats-demo
+                self'.packages.pal-stats-demo
                 #  self'.packages.roscon-fr-2025-abstract
                ];
             };
@@ -38,7 +48,6 @@
               version = "0-unstable-2025-08-29";
 
               src = ./pal_stats_demo;
-              sourceRoot = "source/pal_stats_demo";
 
               dontUseCmakeConfigure = true;
               dontUseCmakeBuild = true;
@@ -56,11 +65,13 @@
                 pkgs.rosPackages.jazzy.pal-statistics
                 pkgs.rosPackages.jazzy.launch
                 pkgs.rosPackages.jazzy.launch-ros
-                pkgs.rosPackages.jazzy.plotjuggler
-                self'.packages.ros2-control-demo-example-1
+                self'.packages.ros-jazzy-plotjuggler
+                self'.packages.ros-jazzy-plotjuggler-ros
+                self'.packages.ros-jazzy-ros2-control-demo-example-1
               ];
 
               doCheck = true;
+              dontWrapQtApps = true;
               pythonImportsCheck = [ "pal_stats_demo" ];
 
               meta = {
@@ -77,104 +88,42 @@
                 platforms = lib.platforms.linux;
               };
             };
-            ros2-control-demo-example-1 = pkgs.python3Packages.buildPythonPackage {
-              pname = "ros2-control-demo-example-1";
-              version = "0-unstable-2025-08-29";
-
-              src = pkgs.fetchFromGitHub {
-                owner = "ros-controls";
-                repo = "ros2_control_demos";
-                tag = "a7ae85f8f2a273bb239e8de7349969386f4028de";
-                hash = lib.fakeSha256;
-              };
+            ros-jazzy-ros2-control-demo-example-1 = pkgs.rosPackages.jazzy.ros2-control-demo-example-1.overrideAttrs {
               nativeBuildInputs = [
                 pkgs.rosPackages.jazzy.ament-cmake
                 pkgs.rosPackages.jazzy.ros2-control-cmake
-              ];
-
-              propagatedBuildInputs = with pkgs.rosPackages.jazzy; [
-                # Depend
-                backward-ros
-                hardware-interface
-                pluginlib
-                rclcpp
-                rclcpp-lifecycle
-                # Exec depend
-                controller-manager
-                forward-command-controller
-                joint-state-broadcaster
-                joint-state-publisher-gui
-                joint-trajectory-controller
-                robot-state-publisher
-                ros2-controllers-test-nodes
-                ros2controlcli
-                ros2launch
-                rqt-joint-trajectory-controller
-                rviz2
-                xacro
-                # self depend
-                self'.packages.ros2-control-demo-description
-              ];
-
-              testInputs = with pkgs.rosPackages.jazzy; [
-                ament-cmake-pytest
-                launch-testing
-                launch
-                liburdfdom-tools
-                rclpy
-              ];
-
-              doCheck = true;
-
-              meta = {
-                description = "Demo package of `ros2_control` hardware for RRbot.";
-                homepage = "https://github.com/ros-controls/ros2_control_demos";
-                license = lib.licenses.asl20;
-                maintainers = [
-                  {
-                    name = "Dr.-Ing. Denis Štogl";
-                    github = "destogl";
-                    githubId = 1918204;
-                  }
-                ];
-                platforms = lib.platforms.linux;
-              };
+              ] ++ (pkgs.ros-jazzy-ros2-control-demo-example-1.nativeBuildInputs or []);
+              propagatedBuildInputs = [
+                pkgs.rosPackages.jazzy.launch-testing-ros
+                pkgs.rosPackages.jazzy.controller-manager
+                pkgs.rosPackages.jazzy.launch
+                pkgs.rosPackages.jazzy.launch-ros
+                pkgs.rosPackages.jazzy.ros2launch
+                pkgs.rosPackages.jazzy.xacro
+                pkgs.rosPackages.jazzy.ros2-control-demo-description
+                pkgs.rosPackages.jazzy.joint-state-broadcaster
+                pkgs.rosPackages.jazzy.forward-command-controller
+                pkgs.rosPackages.jazzy.robot-state-publisher
+                pkgs.rosPackages.jazzy.ros2-controllers-test-nodes
+              ] ++ (pkgs.ros-jazzy-ros2-control-demo-example-1.propagatedBuildInputs or []);
+              doCheck = false;
             };
-            ros2-control-demo-description = pkgs.python3Packages.buildPythonPackage {
-              pname = "ros2-control-demo-description";
-              version = "0-unstable-2025-08-29";
-
+            ros-jazzy-plotjuggler = pkgs.rosPackages.jazzy.plotjuggler.overrideAttrs {
               src = pkgs.fetchFromGitHub {
-                owner = "ros-controls";
-                repo = "ros2_control_demos";
-                tag = "a7ae85f8f2a273bb239e8de7349969386f4028de";
-                hash = lib.fakeSha256;
-              };
-              nativeBuildInputs = [
-                pkgs.rosPackages.jazzy.ament-cmake
-              ];
-
-              propagatedBuildInputs = with pkgs.rosPackages.jazzy; [
-                rviz2
-              ];
-
-              doCheck = true;
-
-              meta = {
-                description = "Description package for the ros2_control demo robots.";
-                homepage = "https://github.com/ros-controls/ros2_control_demos";
-                license = lib.licenses.asl20;
-                maintainers = [
-                  {
-                    name = "Dr.-Ing. Denis Štogl";
-                    github = "destogl";
-                    githubId = 1918204;
-                  }
-                ];
-                platforms = lib.platforms.linux;
+                owner = "facontidavide";
+                repo = "PlotJuggler";
+                rev = "3.10.11";
+                sha256 = "sha256-BFY4MpJHsGi3IjK9hX23YD45GxTJWcSHm/qXeQBy9u8=";
               };
             };
-
+            ros-jazzy-plotjuggler-ros = pkgs.rosPackages.jazzy.plotjuggler-ros.overrideAttrs {
+              src = pkgs.fetchFromGitHub {
+                owner = "PlotJuggler";
+                repo = "plotjuggler-ros-plugins";
+                rev = "2.3.1";
+                sha256 = "sha256-5AR6UbRAE42NZwFR5G+ECdeuvNC3u4UXvIPr8OPZkjQ=";
+              };
+            };
           };
         };
     };
