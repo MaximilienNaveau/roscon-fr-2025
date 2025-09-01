@@ -66,16 +66,16 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1756477292,
-        "narHash": "sha256-KReVU9v28D7KPx0+FVCSn+9pLb0HlaGyZLqj0nsB8Dk=",
+        "lastModified": 1756733173,
+        "narHash": "sha256-LvynHiwG2PZ1EUQRwTQ9OZRv9nDQl+r6EkUDbnGbTc4=",
         "owner": "nim65s",
         "repo": "gepetto-nix",
-        "rev": "5df3da7d4bedf32756c96104a5cc7f38f4f883e3",
+        "rev": "3da25906d3b64e29809e5cbc10f002242e419744",
         "type": "github"
       },
       "original": {
         "owner": "nim65s",
-        "ref": "max",
+        "ref": "maxboost",
         "repo": "gepetto-nix",
         "type": "github"
       }

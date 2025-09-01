@@ -2,7 +2,7 @@
   description = "Abstract and demo for the roscon-fr-2025";
 
   inputs = {
-    gepetto.url = "github:nim65s/gepetto-nix/max";
+    gepetto.url = "github:nim65s/gepetto-nix/maxboost";
     flake-parts.follows = "gepetto/flake-parts";
     # gazebo-sim-overlay.follows = "gepetto/gazebo-sim-overlay";
     nixpkgs.follows = "gepetto/nixpkgs";
@@ -29,6 +29,7 @@
               name = "roscon-fr-dev-shell";
               packages = [
                 self'.packages.roscon-fr-demo
+
               ];
             };
           };
@@ -106,6 +107,7 @@
               doCheck = false;
             };
             ros-jazzy-plotjuggler = pkgs.rosPackages.jazzy.plotjuggler.overrideAttrs (old: {
+              name = "ros-jazzy-plotjuggler-3.10.11";
               src = pkgs.fetchFromGitHub {
                 owner = "facontidavide";
                 repo = "PlotJuggler";
@@ -129,6 +131,14 @@
                 pkgs.rosPackages.jazzy.data-tamer-cpp
                 pkgs.rosPackages.jazzy.mcap-vendor
               ] ++ (old.BuildInputs or []);
+              propagatedBuildInputs = [
+                pkgs.libbfd
+                pkgs.lua
+                pkgs.nlohmann_json
+                pkgs.lz4
+                pkgs.rosPackages.jazzy.data-tamer-cpp
+                pkgs.rosPackages.jazzy.mcap-vendor
+              ] ++ (old.propagatedBuildInputs or []);
             });
             ros-jazzy-plotjuggler-ros = pkgs.rosPackages.jazzy.plotjuggler-ros.overrideAttrs {
               src = pkgs.fetchFromGitHub {
@@ -138,6 +148,7 @@
                 sha256 = "sha256-5AR6UbRAE42NZwFR5G+ECdeuvNC3u4UXvIPr8OPZkjQ=";
               };
             };
+            inherit (pkgs) fizz;
           };
         };
     };
