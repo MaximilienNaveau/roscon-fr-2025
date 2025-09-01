@@ -29,8 +29,6 @@
               name = "roscon-fr-dev-shell";
               packages = [
                 self'.packages.roscon-fr-demo
-                pkgs.libGL
-                pkgs.libGLU
               ];
             };
           };
@@ -62,7 +60,6 @@
                 pkgs.python3Packages.python
                 pkgs.rosPackages.jazzy.std-msgs
                 pkgs.rosPackages.jazzy.rclpy
-                pkgs.rosPackages.jazzy.pal-statistics
                 pkgs.rosPackages.jazzy.launch
                 pkgs.rosPackages.jazzy.launch-ros
                 self'.packages.ros-jazzy-plotjuggler
@@ -108,14 +105,31 @@
               ] ++ (pkgs.ros-jazzy-ros2-control-demo-example-1.propagatedBuildInputs or []);
               doCheck = false;
             };
-            ros-jazzy-plotjuggler = pkgs.rosPackages.jazzy.plotjuggler.overrideAttrs {
+            ros-jazzy-plotjuggler = pkgs.rosPackages.jazzy.plotjuggler.overrideAttrs (old: {
               src = pkgs.fetchFromGitHub {
                 owner = "facontidavide";
                 repo = "PlotJuggler";
                 rev = "3.10.11";
                 sha256 = "sha256-BFY4MpJHsGi3IjK9hX23YD45GxTJWcSHm/qXeQBy9u8=";
               };
-            };
+              postPatch = ''
+                (
+                  echo "function(find_or_download_data_tamer)"
+                  echo "  find_package(data_tamer_cpp REQUIRED)"
+                  echo "  add_library(data_tamer::parser ALIAS data_tamer_cpp::data_tamer)"
+                  echo "  add_library(data_tamer_parser ALIAS data_tamer_cpp::data_tamer)"
+                  echo "endfunction()"
+                ) > cmake/find_or_download_data_tamer.cmake
+              '';
+              BuildInputs = [
+                pkgs.libbfd
+                pkgs.lua
+                pkgs.nlohmann_json
+                pkgs.lz4
+                pkgs.rosPackages.jazzy.data-tamer-cpp
+                pkgs.rosPackages.jazzy.mcap-vendor
+              ] ++ (old.BuildInputs or []);
+            });
             ros-jazzy-plotjuggler-ros = pkgs.rosPackages.jazzy.plotjuggler-ros.overrideAttrs {
               src = pkgs.fetchFromGitHub {
                 owner = "PlotJuggler";
