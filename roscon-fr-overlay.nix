@@ -1,13 +1,14 @@
-self: super: {
-  rosPackages = super.rosPackages // {
-    jazzy = super.rosPackages.jazzy // {
-      plotjuggler = super.rosPackages.jazzy.plotjuggler.overrideAttrs (old: {
-        name = "ros-jazzy-plotjuggler-3.10.11";
-          src = pkgs.fetchFromGitHub {
+final: prev: {
+  rosPackages = prev.rosPackages // {
+    jazzy = prev.rosPackages.jazzy.overrideScope (
+      jazzy-final: jazzy-prev: {
+        plotjuggler = jazzy-prev.plotjuggler.overrideAttrs (super: rec {
+          version = "3.10.11";
+          src = final.fetchFromGitHub {
             owner = "facontidavide";
             repo = "PlotJuggler";
-            rev = "3.10.11";
-            sha256 = "sha256-BFY4MpJHsGi3IjK9hX23YD45GxTJWcSHm/qXeQBy9u8=";
+            tag = version;
+            hash = "sha256-BFY4MpJHsGi3IjK9hX23YD45GxTJWcSHm/qXeQBy9u8=";
           };
           postPatch = ''
             (
@@ -18,34 +19,29 @@ self: super: {
               echo "endfunction()"
             ) > cmake/find_or_download_data_tamer.cmake
           '';
-          BuildInputs = [
-            pkgs.libbfd
-            pkgs.lua
-            pkgs.nlohmann_json
-            pkgs.lz4
-            pkgs.rosPackages.jazzy.data-tamer-cpp
-            pkgs.rosPackages.jazzy.mcap-vendor
-          ] ++ (old.BuildInputs or []);
-          propagatedBuildInputs = [
-            pkgs.libbfd
-            pkgs.lua
-            pkgs.nlohmann_json
-            pkgs.lz4
-            pkgs.rosPackages.jazzy.data-tamer-cpp
-            pkgs.rosPackages.jazzy.mcap-vendor
-          ] ++ (old.propagatedBuildInputs or []);
-      });
-      ros-jazzy-plotjuggler-ros = pkgs.rosPackages.jazzy.plotjuggler-ros.overrideAttrs {
-        src = pkgs.fetchFromGitHub {
-          owner = "PlotJuggler";
-          repo = "plotjuggler-ros-plugins";
-          rev = "2.3.1";
-          sha256 = "sha256-5AR6UbRAE42NZwFR5G+ECdeuvNC3u4UXvIPr8OPZkjQ=";
-        };
-        buildInputs = [
-          self'.packages.ros-jazzy-plotjuggler
-        ];
-      };
-    };
+          buildInputs = [
+            final.libbfd
+            final.lua
+            final.nlohmann_json
+            final.lz4
+            jazzy-prev.data-tamer-cpp
+            jazzy-prev.mcap-vendor
+          ] ++ (super.buildInputs or [ ]);
+        });
+        plotjuggler-ros = jazzy-prev.plotjuggler-ros.overrideAttrs (rec {
+          version = "2.3.1";
+          src = final.fetchFromGitHub {
+            owner = "PlotJuggler";
+            repo = "plotjuggler-ros-plugins";
+            tag = version;
+            hash = "sha256-5AR6UbRAE42NZwFR5G+ECdeuvNC3u4UXvIPr8OPZkjQ=";
+          };
+        });
+        ros2-control-demo-example-1 = jazzy-prev.ros2-control-demo-example-1.overrideAttrs (super: {
+          propagatedBuildInputs = (super.propagatedBuildInputs or [ ]) ++ [ jazzy-final.ros2-control-cmake ];
+          doCheck = false;
+        });
+      }
+    );
   };
 }
