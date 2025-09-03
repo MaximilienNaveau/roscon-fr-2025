@@ -35,7 +35,7 @@
           packages = {
             default = self'.packages.roscon-fr-demo;
             roscon-fr-demo =
-              with pkgs.rosPackages.humble;
+              with pkgs.rosPackages.jazzy;
               buildEnv {
                 name = "roscon-fr-demo";
                 paths = [
@@ -43,7 +43,7 @@
                   #  self'.packages.roscon-fr-2025-abstract
                 ];
               };
-            pal-stats-demo = pkgs.rosPackages.jazzy.callPackage ./. { };
+            pal-stats-demo = pkgs.rosPackages.jazzy.callPackage ./default.nix { };
           };
         };
     };

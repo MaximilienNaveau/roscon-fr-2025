@@ -20,6 +20,7 @@ python3Packages.buildPythonPackage {
   version = "0-unstable-2025-08-29";
 
   src = ./pal_stats_demo;
+  sourceRoot = "./pal_stats_demo";
 
   dontUseCmakeConfigure = true;
   dontUseCmakeBuild = true;
