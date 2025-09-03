@@ -7,6 +7,8 @@
   <maintainer email="maximilien.naveau@pal-robotics.com">user</maintainer>
   <license>BSD 2-clause</license>
 
+  <buildtool_depend>ament_python</buildtool_depend>
+
   <depend>pal_statistics</depend>
   <depend>rclpy</depend>
   <depend>ros2_control_demo_example_1</depend>

@@ -47,6 +47,31 @@ python3Packages.buildPythonPackage {
   doCheck = true;
   dontWrapQtApps = true;
   pythonImportsCheck = [ "pal_stats_demo" ];
+  format = "other";
+
+  buildPhase = ''
+    runHook preBuild
+
+    python setup.py build
+
+    runHook postBuild
+  '';
+
+  installPhase = ''
+    runHook preInstall
+
+    mkdir -p "$out/${python3Packages.python.sitePackages}"
+    export PYTHONPATH="$out/${python3Packages.python.sitePackages}:$PYTHONPATH"
+    python setup.py install --prefix="$out" --single-version-externally-managed --record /dev/null
+
+    runHook postInstall
+  '';
+
+  postFixup = ''
+    find "$out/lib" -mindepth 1 -maxdepth 1 -type d ! -name '${python3Packages.python.libPrefix}' -print0 | while read -d "" libpkgdir; do
+      wrapPythonProgramsIn "$libpkgdir" "$out $pythonPath"
+    done
+  '';
 
   meta = {
     description = "Demo package for pal_statistics introspection.";

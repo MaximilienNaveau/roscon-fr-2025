@@ -9,17 +9,17 @@ package_name = 'pal_stats_demo'
 class CustomInstallCommand(install):
     def run(self):
         install.run(self)
-        # Copy all files from bin to lib/<project_name>
-        bin_dir = self.install_scripts
-        lib_dir = os.path.join(self.install_lib, 'lib', package_name)
-        os.makedirs(lib_dir, exist_ok=True)
-        if os.path.isdir(bin_dir):
-            for fname in os.listdir(bin_dir):
-                print("Copying", fname, "to", lib_dir)
-                src = os.path.join(bin_dir, fname)
-                dst = os.path.join(lib_dir, fname)
-                if os.path.isfile(src):
-                    shutil.copy2(src, dst)
+        # # Copy all files from bin to lib/<project_name>
+        # bin_dir = self.install_scripts
+        # lib_dir = os.path.join(self.install_lib, 'lib', package_name)
+        # os.makedirs(lib_dir, exist_ok=True)
+        # if os.path.isdir(bin_dir):
+        #     for fname in os.listdir(bin_dir):
+        #         print("Copying", fname, "to", lib_dir)
+        #         src = os.path.join(bin_dir, fname)
+        #         dst = os.path.join(lib_dir, fname)
+        #         if os.path.isfile(src):
+        #             shutil.copy2(src, dst)
 
 
 setup(
