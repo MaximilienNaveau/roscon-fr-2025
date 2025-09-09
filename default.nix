@@ -3,6 +3,7 @@
 
   # nativeBuildInputs
   fmt,
+  buildRosPackage,
 
   # propagatedBuildInputs
   python3Packages,
@@ -14,26 +15,28 @@
   plotjuggler-ros,
   ros2-control-demo-example-1,
 
+  # checkInputs
+  ament-copyright,
+  ament-flake8,
+  ament-pep257
 }:
-python3Packages.buildPythonPackage {
-  pname = "pal-stats-demo";
+buildRosPackage {
+  pname = "pal_stats_demo";
   version = "0-unstable-2025-08-29";
 
   src = ./pal_stats_demo;
-  sourceRoot = "./pal_stats_demo";
 
-  dontUseCmakeConfigure = true;
-  dontUseCmakeBuild = true;
-  dontUseCmakeCheck = true;
-  dontUseCmakeInstall = true;
-
+  buildType = "ament_python";
+  checkInputs = [
+    ament-copyright
+    ament-flake8
+    ament-pep257
+    python3Packages.pytest
+  ];
   nativeBuildInputs = [
     fmt
   ];
-
   propagatedBuildInputs = [
-    python3Packages.python
-
     std-msgs
     rclpy
     launch
@@ -41,37 +44,7 @@ python3Packages.buildPythonPackage {
     plotjuggler
     plotjuggler-ros
     ros2-control-demo-example-1
-
   ];
-
-  doCheck = true;
-  dontWrapQtApps = true;
-  pythonImportsCheck = [ "pal_stats_demo" ];
-  format = "other";
-
-  buildPhase = ''
-    runHook preBuild
-
-    python setup.py build
-
-    runHook postBuild
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    mkdir -p "$out/${python3Packages.python.sitePackages}"
-    export PYTHONPATH="$out/${python3Packages.python.sitePackages}:$PYTHONPATH"
-    python setup.py install --prefix="$out" --single-version-externally-managed --record /dev/null
-
-    runHook postInstall
-  '';
-
-  postFixup = ''
-    find "$out/lib" -mindepth 1 -maxdepth 1 -type d ! -name '${python3Packages.python.libPrefix}' -print0 | while read -d "" libpkgdir; do
-      wrapPythonProgramsIn "$libpkgdir" "$out $pythonPath"
-    done
-  '';
 
   meta = {
     description = "Demo package for pal_statistics introspection.";
