@@ -44,6 +44,7 @@
                 ];
               };
             pal-stats-demo = pkgs.rosPackages.jazzy.callPackage ./default.nix { };
+            inherit (pkgs.rosPackages.jazzy) mcap-vendor;
           };
         };
     };
