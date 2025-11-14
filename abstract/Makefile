@@ -4,6 +4,8 @@ SRC_FR=abstract_fr.tex
 PDF_EN=abstract_en.pdf
 PDF_FR=abstract_fr.pdf
 
+.PHONY: $(PDF_FR) $(PDF_EN)
+
 all: $(PDF_FR) # $(PDF_EN)
 
 $(PDF_EN): $(SRC_EN)
