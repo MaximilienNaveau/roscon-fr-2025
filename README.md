@@ -4,7 +4,19 @@ Abstract and demo for the roscon-fr-2025
 ## Build the abstract
 
 ```bash
-cd doc
+cd abstract
+make
+```
+
+## Build the presentation
+
+The presentation is currently a google doc.
+So one need to export it in PDF.
+Some work may be done to convert to Beamer.
+
+I one see a beamer presentation in the `presentation` folder, one can
+```bash
+cd presentation
 make
 ```
 
@@ -24,7 +36,7 @@ ros2 launch ros2_control_demo_example_1 test_forward_position_controller.launch.
 
 - Terminal 3
 ```bash
-ros2 run  plotjuggler plotjuggler
+ros2 run plotjuggler plotjuggler
 ```
 
 ### Phase 2 launch the custom node
@@ -41,5 +53,5 @@ ros2 launch pal_stats_demo test_forward_position_controller.launch.py
 
 - Terminal 3
 ```bash
-ros2 run  plotjuggler plotjuggler
+ros2 run plotjuggler plotjuggler
 ```
