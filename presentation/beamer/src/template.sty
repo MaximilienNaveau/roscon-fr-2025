@@ -1,0 +1,42 @@
+% Prototype Beamer Template Style
+
+
+\ProvidesPackage{template}
+
+
+% Title page setup
+\setbeamertemplate{title page}{
+\begin{centering}
+{\usebeamerfont{title} \usebeamercolor[fg]{title} \inserttitle}\par
+\vspace{1cm}
+{\usebeamerfont{subtitle} \insertsubtitle}\par
+\vspace{1cm}
+{\usebeamerfont{author} \insertauthor}\par
+\vfill
+{\usebeamerfont{date} \insertdate}
+\end{centering}
+}
+
+
+% Thank‑you page
+\newcommand{\thankyoupage}{
+\begin{frame}
+\centering
+{\Huge Thank You!}
+\end{frame}
+}
+
+
+% Two‑column slide prototype
+\newenvironment{twocolframe}[2]{
+\begin{frame}{#1}
+\begin{columns}[T]
+\column{0.48\textwidth}
+#2
+\column{0.48\textwidth}
+}{
+\end{columns}
+\end{frame}
+}
+
+

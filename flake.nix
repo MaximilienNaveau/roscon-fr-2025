@@ -4,7 +4,6 @@
   inputs = {
     gepetto.url = "github:nim65s/gepetto-nix/maxboost";
     flake-parts.follows = "gepetto/flake-parts";
-    # gazebo-sim-overlay.follows = "gepetto/gazebo-sim-overlay";
     nixpkgs.follows = "gepetto/nixpkgs";
     nix-ros-overlay.follows = "gepetto/nix-ros-overlay";
     systems.follows = "gepetto/systems";
@@ -31,6 +30,14 @@
                 self'.packages.default
               ];
             };
+            latex = pkgs.mkShell {
+              name = "roscon-fr-latex-shell";
+              packages = [
+                pkgs.poppler_utils # provides pdftotext, pdfimages
+                pkgs.texlive.combined.scheme-full
+                pkgs.bash
+              ];
+            };
           };
           packages = {
             default = self'.packages.roscon-fr-demo;
@@ -40,10 +47,10 @@
                 name = "roscon-fr-demo";
                 paths = [
                   self'.packages.pal-stats-demo
-                  #  self'.packages.roscon-fr-2025-abstract
                 ];
               };
-            pal-stats-demo = pkgs.rosPackages.jazzy.callPackage ./default.nix { };
+            pal-stats-demo = pkgs.rosPackages.jazzy.callPackage ./pal_stats_demo/default.nix { };
+
             inherit (pkgs.rosPackages.jazzy) mcap-vendor;
           };
         };

@@ -24,7 +24,19 @@ buildRosPackage {
   pname = "pal_stats_demo";
   version = "0-unstable-2025-08-29";
 
-  src = ./pal_stats_demo;
+  src = lib.fileset.toSource {
+    root = ./.;
+    fileset = lib.fileset.unions [
+      ./config
+      ./launch
+      ./pal_stats_demo
+      ./resource
+      ./test
+      ./package.xml
+      ./setup.cfg
+      ./setup.py
+    ];
+  };
 
   buildType = "ament_python";
   checkInputs = [
